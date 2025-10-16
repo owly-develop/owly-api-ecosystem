@@ -4,7 +4,7 @@ Project admin configuration
 from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
-from .models import Project, Unit
+from .models import Project, Unit, Stage, Block, Typology, Amenity, OrbitView
 
 
 class UnitInline(admin.TabularInline):
@@ -313,4 +313,181 @@ class UnitAdmin(admin.ModelAdmin):
     def export_units(self, request, queryset):
         self.message_user(request, f'Export functionality coming soon for {queryset.count()} units.')
     export_units.short_description = 'Export selected units'
+
+
+@admin.register(Stage)
+class StageAdmin(admin.ModelAdmin):
+    list_display = ['name', 'project', 'stage_number', 'housing_typology', 'closing_date', 'created_at']
+    list_filter = ['project', 'housing_typology', 'created_at']
+    search_fields = ['name', 'code', 'slug', 'project__name']
+    readonly_fields = ['id', 'slug', 'created_at', 'updated_at']
+    list_per_page = 50
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': (
+                'project',
+                ('name', 'code'),
+                'slug',
+                ('stage_number', 'glb_code'),
+                'description',
+                'housing_typology'
+            )
+        }),
+        ('Financial', {
+            'fields': (
+                ('separation', 'down_payment'),
+                ('discount', 'projected_increase')
+            )
+        }),
+        ('Dates', {
+            'fields': ('closing_date',)
+        }),
+        ('Media & Metadata', {
+            'fields': ('media_items', 'metadata'),
+            'classes': ('collapse',)
+        }),
+        ('System', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        })
+    )
+
+
+@admin.register(Block)
+class BlockAdmin(admin.ModelAdmin):
+    list_display = ['name', 'stage', 'code', 'target_frame', 'created_at']
+    list_filter = ['stage__project', 'stage', 'created_at']
+    search_fields = ['name', 'code', 'slug', 'stage__name']
+    readonly_fields = ['id', 'slug', 'created_at', 'updated_at']
+    list_per_page = 50
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': (
+                'stage',
+                ('name', 'code'),
+                'slug',
+                ('glb_code', 'target_frame'),
+                'description'
+            )
+        }),
+        ('Pricing', {
+            'fields': (
+                ('price_list', 'smlv_price'),
+            )
+        }),
+        ('Media & Metadata', {
+            'fields': ('media_items', 'metadata'),
+            'classes': ('collapse',)
+        }),
+        ('System', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        })
+    )
+
+
+@admin.register(Typology)
+class TypologyAdmin(admin.ModelAdmin):
+    list_display = ['name', 'stage', 'code', 'bedrooms', 'bathrooms', 'target_frame', 'created_at']
+    list_filter = ['stage__project', 'stage', 'bedrooms', 'bathrooms', 'created_at']
+    search_fields = ['name', 'code', 'slug', 'stage__name']
+    readonly_fields = ['id', 'slug', 'created_at', 'updated_at']
+    list_per_page = 50
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': (
+                'stage',
+                ('name', 'code'),
+                'slug',
+                ('glb_code', 'target_frame'),
+                'description'
+            )
+        }),
+        ('Specifications', {
+            'fields': (
+                ('bedrooms', 'bathrooms'),
+            )
+        }),
+        ('Media & Metadata', {
+            'fields': ('media_items', 'metadata'),
+            'classes': ('collapse',)
+        }),
+        ('System', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        })
+    )
+
+
+@admin.register(Amenity)
+class AmenityAdmin(admin.ModelAdmin):
+    list_display = ['name', 'parent_type', 'parent_id', 'icon', 'floor', 'created_at']
+    list_filter = ['parent_type', 'floor', 'created_at']
+    search_fields = ['name', 'slug', 'glb_code', 'parent_id']
+    readonly_fields = ['id', 'slug', 'created_at', 'updated_at']
+    list_per_page = 50
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': (
+                ('parent_type', 'parent_id'),
+                'name',
+                'slug',
+                ('glb_code', 'icon'),
+                'description'
+            )
+        }),
+        ('Location', {
+            'fields': (
+                ('area', 'floor'),
+            )
+        }),
+        ('Media & Metadata', {
+            'fields': ('media_items', 'metadata'),
+            'classes': ('collapse',)
+        }),
+        ('System', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        })
+    )
+
+
+@admin.register(OrbitView)
+class OrbitViewAdmin(admin.ModelAdmin):
+    list_display = ['name', 'project', 'orbit_type', 'num_images', 'images_extension', 'created_at']
+    list_filter = ['project', 'orbit_type', 'created_at']
+    search_fields = ['name', 'slug', 'code', 'project__name']
+    readonly_fields = ['id', 'created_at', 'updated_at']
+    list_per_page = 50
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': (
+                'project',
+                ('name', 'code'),
+                'slug',
+                'orbit_type',
+                'description'
+            )
+        }),
+        ('Configuration', {
+            'fields': (
+                'images_folder',
+                ('images_extension', 'num_images'),
+                'glb_file'
+            )
+        }),
+        ('Metadata', {
+            'fields': ('metadata',),
+            'classes': ('collapse',)
+        }),
+        ('System', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        })
+    )
 

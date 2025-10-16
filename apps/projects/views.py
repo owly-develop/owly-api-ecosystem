@@ -8,8 +8,16 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q, Avg, Count, Sum
 from apps.core.permissions import IsTenantUser
-from .models import Project, Unit
-from .serializers import ProjectSerializer, ProjectListSerializer, UnitSerializer
+from .models import Project, Unit, Stage, Block, Typology, Amenity, OrbitView
+from .serializers import (
+    ProjectSerializer, ProjectListSerializer, ProjectDetailSerializer,
+    UnitSerializer, UnitListSerializer,
+    StageSerializer, StageListSerializer,
+    BlockSerializer,
+    TypologySerializer,
+    AmenitySerializer,
+    OrbitViewSerializer
+)
 from .filters import ProjectFilter, UnitFilter
 
 
@@ -25,6 +33,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return ProjectListSerializer
+        elif self.action == 'retrieve':
+            return ProjectDetailSerializer
         return ProjectSerializer
     
     def get_queryset(self):
@@ -214,4 +224,161 @@ class UnitViewSet(viewsets.ModelViewSet):
         
         serializer = self.get_serializer(queryset[:20], many=True)
         return Response(serializer.data)
+
+
+class StageViewSet(viewsets.ModelViewSet):
+    """ViewSet for managing stages"""
+    queryset = Stage.objects.all()
+    permission_classes = [IsAuthenticated, IsTenantUser]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'code', 'slug', 'stage_number']
+    ordering_fields = ['created_at', 'name', 'stage_number', 'closing_date']
+    
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return StageListSerializer
+        return StageSerializer
+    
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Stage.objects.select_related('project').prefetch_related('blocks', 'typologies')
+        
+        if user.is_superuser:
+            return queryset
+        if hasattr(user, 'company'):
+            return queryset.filter(company=user.company, is_deleted=False)
+        return Stage.objects.none()
+    
+    def perform_create(self, serializer):
+        serializer.save(company=self.request.user.company)
+    
+    @action(detail=True, methods=['get'])
+    def blocks(self, request, pk=None):
+        """Get all blocks for a stage"""
+        stage = self.get_object()
+        blocks = stage.blocks.filter(is_deleted=False)
+        serializer = BlockSerializer(blocks, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=True, methods=['get'])
+    def typologies(self, request, pk=None):
+        """Get all typologies for a stage"""
+        stage = self.get_object()
+        typologies = stage.typologies.filter(is_deleted=False)
+        serializer = TypologySerializer(typologies, many=True)
+        return Response(serializer.data)
+
+
+class BlockViewSet(viewsets.ModelViewSet):
+    """ViewSet for managing blocks"""
+    queryset = Block.objects.all()
+    serializer_class = BlockSerializer
+    permission_classes = [IsAuthenticated, IsTenantUser]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'code', 'slug']
+    ordering_fields = ['created_at', 'name', 'code']
+    
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Block.objects.select_related('stage', 'stage__project').prefetch_related('units')
+        
+        if user.is_superuser:
+            return queryset
+        if hasattr(user, 'company'):
+            return queryset.filter(company=user.company, is_deleted=False)
+        return Block.objects.none()
+    
+    def perform_create(self, serializer):
+        serializer.save(company=self.request.user.company)
+    
+    @action(detail=True, methods=['get'])
+    def units(self, request, pk=None):
+        """Get all units for a block"""
+        block = self.get_object()
+        units = block.units.filter(is_deleted=False)
+        serializer = UnitListSerializer(units, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=True, methods=['get'])
+    def amenities(self, request, pk=None):
+        """Get all amenities for a block"""
+        block = self.get_object()
+        amenities = Amenity.objects.filter(parent_type='block', parent_id=str(block.id), is_deleted=False)
+        serializer = AmenitySerializer(amenities, many=True)
+        return Response(serializer.data)
+
+
+class TypologyViewSet(viewsets.ModelViewSet):
+    """ViewSet for managing typologies"""
+    queryset = Typology.objects.all()
+    serializer_class = TypologySerializer
+    permission_classes = [IsAuthenticated, IsTenantUser]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'code', 'slug']
+    ordering_fields = ['created_at', 'name', 'code', 'bedrooms']
+    
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Typology.objects.select_related('stage', 'stage__project').prefetch_related('units')
+        
+        if user.is_superuser:
+            return queryset
+        if hasattr(user, 'company'):
+            return queryset.filter(company=user.company, is_deleted=False)
+        return Typology.objects.none()
+    
+    def perform_create(self, serializer):
+        serializer.save(company=self.request.user.company)
+    
+    @action(detail=True, methods=['get'])
+    def units(self, request, pk=None):
+        """Get all units for a typology"""
+        typology = self.get_object()
+        units = typology.units.filter(is_deleted=False)
+        serializer = UnitListSerializer(units, many=True)
+        return Response(serializer.data)
+
+
+class AmenityViewSet(viewsets.ModelViewSet):
+    """ViewSet for managing amenities"""
+    queryset = Amenity.objects.all()
+    serializer_class = AmenitySerializer
+    permission_classes = [IsAuthenticated, IsTenantUser]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'slug', 'icon']
+    ordering_fields = ['created_at', 'name', 'parent_type', 'floor']
+    
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_superuser:
+            return Amenity.objects.all()
+        if hasattr(user, 'company'):
+            return Amenity.objects.filter(company=user.company, is_deleted=False)
+        return Amenity.objects.none()
+    
+    def perform_create(self, serializer):
+        serializer.save(company=self.request.user.company)
+
+
+class OrbitViewViewSet(viewsets.ModelViewSet):
+    """ViewSet for managing orbit views"""
+    queryset = OrbitView.objects.all()
+    serializer_class = OrbitViewSerializer
+    permission_classes = [IsAuthenticated, IsTenantUser]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'slug', 'code']
+    ordering_fields = ['created_at', 'name', 'orbit_type']
+    
+    def get_queryset(self):
+        user = self.request.user
+        queryset = OrbitView.objects.select_related('project')
+        
+        if user.is_superuser:
+            return queryset
+        if hasattr(user, 'company'):
+            return queryset.filter(company=user.company, is_deleted=False)
+        return OrbitView.objects.none()
+    
+    def perform_create(self, serializer):
+        serializer.save(company=self.request.user.company)
 
