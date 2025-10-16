@@ -117,12 +117,20 @@ class Command(BaseCommand):
         """Create projects"""
         from apps.projects.models import Project
         from apps.users.models import User
+        import uuid
         
         self.stdout.write('\n🏗️ Creando proyectos...')
         
         all_projects = []
         cities = ["Miami", "Tampa", "Orlando"]
+        project_names = [
+            "Sunset Towers", "Ocean View Residences", "Palm Gardens",
+            "Bay Point", "Harbor Plaza", "Skyline Tower",
+            "Coastal Living", "Riverside Estate", "Grand Boulevard",
+            "Marina Del Sol", "Paradise Cove", "Azure Heights"
+        ]
         
+        name_idx = 0
         for company in companies:
             for i in range(4):
                 city = random.choice(cities)
@@ -131,11 +139,13 @@ class Command(BaseCommand):
                 reserved = random.randint(0, int(total_units * 0.1))
                 available = total_units - sold - reserved
                 
-                import uuid
                 code_suffix = str(uuid.uuid4())[:6].upper()
+                project_name = f"{project_names[name_idx % len(project_names)]} {city}"
+                name_idx += 1
+                
                 project = Project.objects.create(
                     company=company,
-                    name=f"Proyecto {city} {i+1}",
+                    name=project_name,
                     code=f"{city[:3].upper()}-{code_suffix}",
                     description=fake.paragraph(),
                     address=fake.street_address(),
