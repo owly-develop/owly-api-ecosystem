@@ -1,0 +1,344 @@
+{
+  "info": {
+    "name": "OWLY CRM API",
+    "description": "Colección completa de endpoints para OWLY CRM API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"admin@owlycrm.com\",\n    \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login/",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login", ""]
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/users/profile/",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "users", "profile", ""]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"refresh\": \"YOUR_REFRESH_TOKEN\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/refresh/",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "refresh", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👥 Leads",
+      "item": [
+        {
+          "name": "List Leads",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/leads/",
+              "host": ["{{base_url}}"],
+              "path": ["leads", ""]
+            }
+          }
+        },
+        {
+          "name": "List Leads (Filtered - Qualified)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/leads/?status=qualified&score_min=70",
+              "host": ["{{base_url}}"],
+              "path": ["leads", ""],
+              "query": [
+                {"key": "status", "value": "qualified"},
+                {"key": "score_min", "value": "70"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Lead",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"first_name\": \"Carlos\",\n    \"last_name\": \"Rodríguez\",\n    \"email\": \"carlos@example.com\",\n    \"phone\": \"+1-305-555-1234\",\n    \"source\": \"website\",\n    \"priority\": \"high\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/leads/",
+              "host": ["{{base_url}}"],
+              "path": ["leads", ""]
+            }
+          }
+        },
+        {
+          "name": "Hot Leads",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/leads/hot_leads/",
+              "host": ["{{base_url}}"],
+              "path": ["leads", "hot_leads", ""]
+            }
+          }
+        },
+        {
+          "name": "Lead Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/leads/stats/",
+              "host": ["{{base_url}}"],
+              "path": ["leads", "stats", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏗️ Projects",
+      "item": [
+        {
+          "name": "List Projects",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/projects/",
+              "host": ["{{base_url}}"],
+              "path": ["projects", ""]
+            }
+          }
+        },
+        {
+          "name": "Featured Projects",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/projects/featured/",
+              "host": ["{{base_url}}"],
+              "path": ["projects", "featured", ""]
+            }
+          }
+        },
+        {
+          "name": "Projects by Location",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/projects/by_location/",
+              "host": ["{{base_url}}"],
+              "path": ["projects", "by_location", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏠 Units",
+      "item": [
+        {
+          "name": "List Units",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/projects/units/",
+              "host": ["{{base_url}}"],
+              "path": ["projects", "units", ""]
+            }
+          }
+        },
+        {
+          "name": "Available Units (Filtered)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/projects/units/?status=available&bedrooms=2&price_max=400000",
+              "host": ["{{base_url}}"],
+              "path": ["projects", "units", ""],
+              "query": [
+                {"key": "status", "value": "available"},
+                {"key": "bedrooms", "value": "2"},
+                {"key": "price_max", "value": "400000"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📊 Analytics",
+      "item": [
+        {
+          "name": "Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/analytics/dashboard/",
+              "host": ["{{base_url}}"],
+              "path": ["analytics", "dashboard", ""]
+            }
+          }
+        },
+        {
+          "name": "Sales Funnel",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/analytics/sales-funnel/",
+              "host": ["{{base_url}}"],
+              "path": ["analytics", "sales-funnel", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "❤️ Health Check",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health/",
+              "host": ["{{base_url}}"],
+              "path": ["health", ""]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+

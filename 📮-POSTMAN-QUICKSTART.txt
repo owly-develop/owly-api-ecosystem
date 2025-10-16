@@ -1,0 +1,434 @@
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║                  📮 POSTMAN - GUÍA RÁPIDA                                   ║
+║                  Probar la API en 5 Minutos                                  ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  🎯 ARCHIVOS CREADOS                                                         │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    📄 POSTMAN_COLLECTION.md
+       • Todos los curls listos para copiar
+       • Ejemplos completos de uso
+       • Flujos de trabajo
+       • ~100 ejemplos de requests
+
+    📄 postman_collection.json
+       • Archivo JSON para importar directo en Postman
+       • Colección organizada por carpetas
+       • Variables configuradas
+
+    📄 📮-POSTMAN-QUICKSTART.txt
+       • Esta guía rápida
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  ⚡ OPCIÓN 1: IMPORTAR JSON (MÁS RÁPIDO)                                     │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    PASO 1: Abrir Postman
+
+    PASO 2: Import → Upload Files
+            Selecciona: postman_collection.json
+
+    PASO 3: Se crea colección "OWLY CRM API" automáticamente
+
+    PASO 4: Configurar Environment
+            • New Environment → "OWLY Local"
+            • Variable: base_url = http://localhost:8000/api
+            • Variable: access_token = (vacío por ahora)
+            • Save
+
+    PASO 5: Hacer Login
+            • Carpeta "🔐 Authentication" → "Login"
+            • Send
+            • Copiar el "access" del response
+            • Pegar en variable "access_token" del environment
+
+    PASO 6: ¡Probar cualquier endpoint!
+            • Todos usan {{base_url}} y {{access_token}}
+            • Solo hacer click y Send
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  📋 OPCIÓN 2: USAR CURLS (MÁS FLEXIBLE)                                     │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    PASO 1: Abre POSTMAN_COLLECTION.md
+
+    PASO 2: Copia cualquier curl
+
+    PASO 3: En Postman → Import → Raw text
+            Pega el curl
+            Postman lo convierte automáticamente
+
+    PASO 4: Click "Send"
+
+    VENTAJAS:
+    • Puedes ver el código antes de importar
+    • Modificar antes de crear
+    • Entender qué hace cada request
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  🚀 PRUEBA RÁPIDA (2 MINUTOS)                                                │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    PASO 1: Health Check (sin auth)
+
+    curl http://localhost:8000/api/health/
+
+    Deberías ver:
+    {
+      "status": "healthy",
+      "database": "connected",
+      "cache": "connected"
+    }
+
+    PASO 2: Login
+
+    curl --location 'http://localhost:8000/api/auth/login/' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+        "email": "admin@owlycrm.com",
+        "password": "admin123"
+    }'
+
+    COPIA EL ACCESS TOKEN
+
+    PASO 3: Dashboard (reemplaza TU_TOKEN)
+
+    curl --location 'http://localhost:8000/api/analytics/dashboard/' \
+    --header 'Authorization: Bearer TU_TOKEN'
+
+    Verás stats con DATOS REALES (300 leads, 12 proyectos, etc.)
+
+    PASO 4: Ver Leads
+
+    curl --location 'http://localhost:8000/api/leads/' \
+    --header 'Authorization: Bearer TU_TOKEN'
+
+    Verás los 300 leads creados!
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  📚 ENDPOINTS DISPONIBLES                                                    │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    🔐 AUTHENTICATION (3 endpoints)
+    • POST /api/auth/login/
+    • POST /api/auth/refresh/
+    • GET  /api/auth/users/profile/
+
+    👥 LEADS (18 endpoints)
+    • GET  /api/leads/
+    • POST /api/leads/
+    • GET  /api/leads/{id}/
+    • GET  /api/leads/hot_leads/
+    • GET  /api/leads/stats/
+    • POST /api/leads/bulk_assign/
+    • Y 12 más...
+
+    🏗️ PROJECTS (10 endpoints)
+    • GET  /api/projects/
+    • POST /api/projects/
+    • GET  /api/projects/featured/
+    • GET  /api/projects/by_location/
+    • Y 6 más...
+
+    🏠 UNITS (8 endpoints)
+    • GET  /api/projects/units/
+    • POST /api/projects/units/{id}/reserve/
+    • POST /api/projects/units/{id}/mark_as_sold/
+    • Y 5 más...
+
+    💰 QUOTES (8 endpoints)
+    • GET  /api/quotes/
+    • POST /api/quotes/
+    • POST /api/quotes/{id}/send/
+    • Y 5 más...
+
+    📊 ANALYTICS (3 endpoints)
+    • GET /api/analytics/dashboard/
+    • GET /api/analytics/sales-funnel/
+    • GET /api/analytics/leads/
+
+    ⏰ SCHEDULED TASKS (8 endpoints)
+    • GET  /api/scheduled-tasks/
+    • POST /api/scheduled-tasks/
+    • POST /api/scheduled-tasks/{id}/run_now/
+    • Y 5 más...
+
+    TOTAL: 83+ endpoints
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  💡 TIPS PARA POSTMAN                                                        │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    TIP 1: Usar Variables
+    • En lugar de escribir el token cada vez
+    • Crea variable: {{access_token}}
+    • Úsala en Authorization header
+
+    TIP 2: Tests Automáticos
+    • En tab "Tests" de Login:
+      pm.environment.set("access_token", pm.response.json().access);
+    • El token se guarda automáticamente!
+
+    TIP 3: Colecciones
+    • Organiza endpoints en carpetas
+    • Leads, Projects, Analytics, etc.
+    • Fácil de navegar
+
+    TIP 4: Guardar IDs
+    • Después de crear lead/project:
+      pm.environment.set("lead_id", pm.response.json().id);
+    • Usar {{lead_id}} en otros requests
+
+    TIP 5: Pre-request Script
+    • Auto-login antes de cada request
+    • Ver ejemplo en POSTMAN_COLLECTION.md
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  🎯 FLUJO DE TESTING RECOMENDADO                                             │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    1. ❤️ Health Check
+       → Verificar que API está corriendo
+
+    2. 🔐 Login
+       → Obtener token
+       → Guardar en variable
+
+    3. 📊 Dashboard
+       → Ver stats generales
+       → Confirmar que hay datos
+
+    4. 👥 Listar Leads
+       → Ver los 300 leads
+       → Probar filtros
+
+    5. 🏗️ Listar Projects
+       → Ver los 12 proyectos
+       → Ver stats de uno
+
+    6. 🏠 Listar Units
+       → Ver las 360 unidades
+       → Filtrar disponibles
+
+    7. 💰 Crear Quote
+       → Para un lead existente
+       → Enviar
+       → Aceptar
+
+    8. ⏰ Ver Scheduled Tasks
+       → Listar tareas programadas
+       → Ejecutar una
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  🔑 CREDENCIALES PARA PROBAR                                                 │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    SUPERUSER (ve todo):
+    📧 admin@owlycrm.com
+    🔑 admin123
+
+    EMPRESA 1 (Desarrollos Premium):
+    📧 william.frías1@company-1.com
+    🔑 demo123
+    → Ve solo datos de esta empresa
+
+    EMPRESA 2 (Constructora Horizonte):
+    📧 abel.monroe0@company-2.com
+    🔑 demo123
+    → Ve solo datos de esta empresa
+
+    EMPRESA 3 (Inversiones Urbanas):
+    📧 robert.martin1@company-3.com
+    🔑 demo123
+    → Ve solo datos de esta empresa
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  📝 EJEMPLO COMPLETO PASO A PASO                                             │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    En Postman:
+
+    REQUEST 1: Login
+    ┌─────────────────────────────────────────┐
+    │ POST http://localhost:8000/api/auth/login/ │
+    │                                            │
+    │ Body (raw, JSON):                          │
+    │ {                                          │
+    │   "email": "admin@owlycrm.com",           │
+    │   "password": "admin123"                   │
+    │ }                                          │
+    │                                            │
+    │ [Send]                                     │
+    └─────────────────────────────────────────┘
+
+    Response:
+    {
+      "access": "eyJ0eXAiOiJKV1...",  ← COPIA ESTO
+      "refresh": "eyJ0eXAiOiJK..."
+    }
+
+    REQUEST 2: Dashboard
+    ┌─────────────────────────────────────────┐
+    │ GET http://localhost:8000/api/analytics/dashboard/ │
+    │                                            │
+    │ Headers:                                   │
+    │ Authorization: Bearer eyJ0eXAiOiJKV1...  │
+    │                      ↑ PEGA TOKEN AQUÍ    │
+    │ [Send]                                     │
+    └─────────────────────────────────────────┘
+
+    Response:
+    {
+      "leads": {
+        "total": 300,
+        "new": 75,
+        "qualified": 45,
+        ...
+      },
+      "projects": {
+        "total": 12,
+        "active": 12,
+        ...
+      }
+    }
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  🎨 COLECCIONES RECOMENDADAS                                                 │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    Organiza así en Postman:
+
+    📁 OWLY CRM API
+      ├─ 📁 🔐 Authentication
+      │   ├─ Login
+      │   ├─ Refresh Token
+      │   └─ Get Profile
+      │
+      ├─ 📁 👥 Leads
+      │   ├─ List Leads
+      │   ├─ Create Lead
+      │   ├─ Hot Leads
+      │   ├─ Lead Stats
+      │   └─ Bulk Assign
+      │
+      ├─ 📁 🏗️ Projects
+      │   ├─ List Projects
+      │   ├─ Featured Projects
+      │   └─ By Location
+      │
+      ├─ 📁 🏠 Units
+      │   ├─ List Units
+      │   ├─ Reserve Unit
+      │   └─ Mark as Sold
+      │
+      ├─ 📁 💰 Quotes
+      │   ├─ List Quotes
+      │   ├─ Create Quote
+      │   ├─ Send Quote
+      │   └─ Accept Quote
+      │
+      ├─ 📁 📊 Analytics
+      │   ├─ Dashboard
+      │   ├─ Sales Funnel
+      │   └─ Lead Analytics
+      │
+      └─ 📁 ⏰ Scheduled Tasks
+          ├─ List Tasks
+          ├─ Create Task
+          └─ Run Task Now
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  🚀 INICIO SUPER RÁPIDO                                                      │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    OPCIÓN A: Importar JSON (30 segundos)
+    1. Postman → Import → Upload Files
+    2. Selecciona: postman_collection.json
+    3. Listo! Colección importada
+    4. Haz login para obtener token
+    5. Prueba cualquier endpoint
+
+    OPCIÓN B: Copiar Curls (1 minuto por endpoint)
+    1. Abre: POSTMAN_COLLECTION.md
+    2. Copia el curl que necesites
+    3. Postman → Import → Raw text → Pega
+    4. Postman lo convierte automáticamente
+    5. Send
+
+    OPCIÓN C: Swagger UI (más visual)
+    1. http://localhost:8000/api/docs/
+    2. Try it out directo en navegador
+    3. No necesitas Postman
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  📖 DOCUMENTOS RELACIONADOS                                                  │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    📄 POSTMAN_COLLECTION.md
+       → Todos los curls con explicaciones
+
+    📄 ENDPOINTS_GUIDE.md
+       → Intención de cada endpoint
+       → Casos de uso detallados
+
+    📄 FRONTEND_INTEGRATION_GUIDE.md
+       → Cómo integrar con frontend
+
+    🌐 http://localhost:8000/api/docs/
+       → Swagger UI interactiva
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  💡 PRIMEROS ENDPOINTS A PROBAR                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    1. Health Check (sin auth):
+       GET http://localhost:8000/api/health/
+
+    2. Login:
+       POST http://localhost:8000/api/auth/login/
+       Body: {"email": "admin@owlycrm.com", "password": "admin123"}
+
+    3. Dashboard (con token):
+       GET http://localhost:8000/api/analytics/dashboard/
+       Header: Authorization: Bearer {tu_token}
+
+    4. Leads (con token):
+       GET http://localhost:8000/api/leads/
+
+    5. Hot Leads (con token):
+       GET http://localhost:8000/api/leads/hot_leads/
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║                  ✅ TODO LISTO PARA POSTMAN                                 ║
+║                                                                              ║
+║          Archivo JSON:  postman_collection.json                             ║
+║          Curls:         POSTMAN_COLLECTION.md                               ║
+║          Guía:          📮-POSTMAN-QUICKSTART.txt                           ║
+║                                                                              ║
+║          Swagger UI:    http://localhost:8000/api/docs/                     ║
+║                                                                              ║
+║          ¡83+ endpoints listos para probar! 🚀                              ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+

@@ -1,0 +1,596 @@
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║                  📘 NUEVAS GUÍAS DOCUMENTADAS                               ║
+║                  Frontend Integration + Inventory Enhancement                ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  📖 DOCUMENTOS CREADOS EN ESTA SESIÓN                                        │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    1. FRONTEND_INTEGRATION_GUIDE.md  (NUEVO ⭐)
+       → Guía COMPLETA de cómo conectar el frontend React con la API
+       → NO hace la integración, solo documenta paso a paso
+       → Incluye código de ejemplo completo
+
+    2. INVENTORY_MODELS_ENHANCED.md  (NUEVO ⭐)
+       → Campos adicionales propuestos para Projects y Units
+       → Sistema mucho más robusto para inventario inmobiliario
+       → Workflow completo de estados
+
+    3. apps/projects/models_enhanced.py  (NUEVO ⭐)
+       → Implementación de modelos mejorados
+       → Listos para copiar a models.py
+
+    4. INVENTORY_ENDPOINTS.md  (NUEVO ⭐)
+       → 30+ endpoints adicionales propuestos
+       → Para gestión avanzada de inventario
+       → Con Request/Response examples
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  🔌 FRONTEND_INTEGRATION_GUIDE.md                                            │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    Este documento explica PASO A PASO:
+
+    ✅ PASO 1: Configurar CORS en la API
+       • Qué agregar en .env
+       • Cómo verificar que funciona
+
+    ✅ PASO 2: Configurar el Frontend
+       • Crear src/config/api.ts con todos los endpoints
+       • Crear .env en frontend con API_URL
+
+    ✅ PASO 3: Implementar Servicio de Autenticación
+       • src/services/auth.service.ts
+       • Login, logout, refresh automático
+       • Manejo de tokens JWT
+       • Código completo incluido
+
+    ✅ PASO 4: Crear Cliente API Genérico
+       • src/services/api.client.ts
+       • GET, POST, PUT, PATCH, DELETE
+       • Error handling
+       • Código completo incluido
+
+    ✅ PASO 5: Crear Servicios por Modelo
+       • src/services/leads.service.ts
+       • src/services/projects.service.ts
+       • Todos los métodos documentados
+       • Código completo incluido
+
+    ✅ PASO 6: Crear Hooks de React
+       • src/hooks/useAuth.ts
+       • src/hooks/useApi.ts
+       • Código completo incluido
+
+    ✅ PASO 7: Ejemplos de Uso en Componentes
+       • LoginPage component completo
+       • LeadsPage component completo
+       • Dashboard component completo
+
+    ✅ PASO 8: Mapeo de Tipos TypeScript
+       • Cómo transformar snake_case ↔ camelCase
+       • Transformers utilities
+
+    ✅ PASO 9: Proteger Rutas
+       • ProtectedRoute component
+       • Verificación de roles
+       • Código completo incluido
+
+    ✅ PASO 10: Integración con Zustand
+       • authStore example
+       • leadsStore example
+       • Estado global
+
+    ✅ PASO 11: Testing de Integración
+       • Mock Service Worker (MSW)
+       • Testing de la integración
+
+    ✅ PASO 12: Checklist Completo
+       • Todos los archivos a crear
+       • Pasos de verificación
+
+    PLUS:
+    • Flujo completo de autenticación
+    • Mapeo endpoint → componente
+    • Troubleshooting común
+    • Quick start options
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  🏗️ MEJORAS DE INVENTARIO PROPUESTAS                                        │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    PROJECTS - NUEVOS CAMPOS (50+ campos):
+
+    💰 Financiero:
+       • cost_per_unit
+       • total_development_cost
+       • projected_revenue
+       • actual_revenue
+       • profit_margin_percentage
+       • payment_plans (JSON)
+       • active_promotions (JSON)
+
+    🏗️ Construcción:
+       • construction_phases (JSON)
+       • current_phase
+       • next_milestone (JSON)
+
+    📄 Legal:
+       • building_permit_number
+       • building_permit_date
+       • environmental_license
+       • legal_documents (JSON)
+
+    📈 Marketing:
+       • marketing_campaigns (JSON)
+       • seo_keywords
+       • show_on_marketplace
+
+    📊 Inventario:
+       • inventory_breakdown (JSON detallado)
+       • Breakdown por tipo, piso, precio, orientación
+
+    🔧 Post-Venta:
+       • warranty_period_years
+       • after_sales_contact
+       • maintenance_company
+
+    UNITS - NUEVOS CAMPOS (70+ campos):
+
+    🔄 Estados Mejorados:
+       • option (opción 24-48h)
+       • separated (apartado con señas)
+       • contract_pending
+       • contract_signed
+       • in_payment
+       • paid
+       • ready_for_delivery
+       • delivered
+       • 13 estados vs 4 actuales
+
+    📝 Workflow:
+       • sub_status
+       • status_expires_at
+       • previous_status
+       • status_changed_by
+
+    👤 Cliente:
+       • customer_first_name
+       • customer_last_name
+       • customer_email
+       • customer_phone
+       • customer_id_number
+
+    📄 Contrato:
+       • contract_number
+       • contract_date
+       • contract_type
+       • notary, notary_date
+       • deed_number
+
+    💰 Financiamiento:
+       • payment_scheme (JSON completo)
+       • payments_received
+       • payments_pending
+       • payment_history (JSON con historial)
+       • next_payment_date
+       • payment_status (current/overdue/paid_off)
+
+    💵 Precios:
+       • price_history (JSON)
+       • original_price
+       • current_discount
+       • final_sale_price
+       • discount_breakdown
+
+    🎨 Personalizaciones:
+       • customizations (JSON)
+       • total_customizations_cost
+       • customizations_approved
+       • customizations_deadline
+
+    🏗️ Construcción:
+       • construction_status
+       • construction_progress_percentage
+       • estimated_completion_date
+       • inspections (JSON)
+
+    🔑 Entrega:
+       • scheduled_delivery_date
+       • actual_delivery_date
+       • delivery_status
+       • keys_delivered
+       • keys_delivered_date
+
+    📋 Documentos:
+       • unit_documents (JSON)
+       • Contratos, escrituras, planos
+
+    🏘️ Extras:
+       • parking_spaces (JSON)
+       • storage_units (JSON)
+       • hoa_fee_monthly
+       • estimated_monthly_costs
+
+    🔍 Audit:
+       • operation_history (JSON)
+       • Historial completo de operaciones
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  🎯 ENDPOINTS ADICIONALES PROPUESTOS (30+)                                   │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    PROJECTS (12 nuevos):
+    • GET  /api/projects/{id}/inventory_breakdown/
+    • GET  /api/projects/{id}/sales_velocity/
+    • POST /api/projects/{id}/update_construction_phase/
+    • GET  /api/projects/{id}/payment_collections/
+    • GET  /api/projects/{id}/available_by_criteria/
+    • POST /api/projects/{id}/apply_promotion/
+    • GET  /api/projects/{id}/financial_report/
+    • GET  /api/projects/{id}/construction_schedule/
+
+    UNITS (18 nuevos):
+    • POST /api/units/{id}/put_on_option/
+    • POST /api/units/{id}/separate/
+    • POST /api/units/{id}/sign_contract/
+    • POST /api/units/{id}/record_payment/
+    • POST /api/units/{id}/add_customization/
+    • POST /api/units/{id}/approve_customizations/
+    • POST /api/units/{id}/schedule_delivery/
+    • POST /api/units/{id}/deliver/
+    • GET  /api/units/{id}/payment_schedule/
+    • GET  /api/units/{id}/operation_history/
+    • POST /api/units/{id}/apply_discount/
+    • POST /api/units/{id}/change_price/
+    • GET  /api/units/expiring_options/
+    • GET  /api/units/payment_overdue/
+    • GET  /api/units/ready_for_delivery/
+    • GET  /api/units/in_construction/
+    • GET  /api/units/customizations_pending/
+
+    ANALYTICS (3 nuevos):
+    • GET /api/analytics/inventory_health/
+    • GET /api/analytics/pricing_intelligence/
+    • GET /api/analytics/customer_insights/
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  🔄 WORKFLOW MEJORADO DE UNIDAD                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    ANTES (4 estados):
+    available → reserved → sold → (blocked)
+
+    AHORA (13 estados):
+    available
+      ↓ POST /api/units/{id}/put_on_option/
+    option (24-48h)
+      ↓ POST /api/units/{id}/separate/
+    separated (con señas)
+      ↓ POST /api/units/{id}/reserve/
+    reserved (formal)
+      ↓ (proceso legal)
+    contract_pending
+      ↓ POST /api/units/{id}/sign_contract/
+    contract_signed
+      ↓ POST /api/units/{id}/record_payment/ (enganche)
+    in_payment
+      ↓ POST /api/units/{id}/record_payment/ (última cuota)
+    paid
+      ↓ (construcción completa)
+    ready_for_delivery
+      ↓ POST /api/units/{id}/schedule_delivery/
+    delivery_scheduled
+      ↓ POST /api/units/{id}/deliver/
+    delivered
+
+    CADA TRANSICIÓN:
+    • Validada
+    • Trackeada en operation_history
+    • Notificaciones automáticas
+    • Actualiza contadores del proyecto
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  💡 CASOS DE USO DEL MUNDO REAL                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    CASO 1: Cliente pide opción
+    • Vendedor: POST /api/units/{id}/put_on_option/
+    • Sistema: Bloquea unidad por 48h
+    • Sistema: Programa recordatorio automático
+    • Si expira: Libera automáticamente
+
+    CASO 2: Cliente aparta con señas
+    • Vendedor: POST /api/units/{id}/separate/
+    • Sistema: Marca como separado
+    • Sistema: Registra depósito
+    • Sistema: Da 15 días para decidir
+
+    CASO 3: Cliente firma contrato
+    • Vendedor: POST /api/units/{id}/sign_contract/
+    • Sistema: Crea calendario de pagos automático
+    • Sistema: Notifica a finance
+    • Sistema: Genera documentos
+
+    CASO 4: Cliente hace pago mensual
+    • Finance: POST /api/units/{id}/record_payment/
+    • Sistema: Actualiza balance
+    • Sistema: Calcula próximo pago
+    • Si se atrasa: Marca como overdue
+
+    CASO 5: Unidad lista para entrega
+    • Construction: Marca como ready_for_delivery
+    • Sistema: Notifica a sales
+    • Vendedor: POST /api/units/{id}/schedule_delivery/
+    • Vendedor: POST /api/units/{id}/deliver/
+    • Sistema: Marca como delivered
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  🚀 CÓMO USAR LA GUÍA DE FRONTEND                                            │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    FRONTEND_INTEGRATION_GUIDE.md contiene:
+
+    ✅ 12 pasos detallados
+    ✅ Código TypeScript completo listo para copiar
+    ✅ Servicios completos (auth, API client, leads, projects)
+    ✅ Hooks (useAuth, useApi)
+    ✅ Componentes de ejemplo (Login, Leads, Dashboard)
+    ✅ Protected Routes
+    ✅ Zustand stores
+    ✅ Error handling
+    ✅ Token refresh automático
+    ✅ Testing con MSW
+    ✅ Troubleshooting
+    ✅ Checklist completo
+
+    NO HACE LA INTEGRACIÓN POR TI
+    TE DA TODO EL CÓDIGO PARA QUE LO COPIES
+
+    Archivos que necesitas crear en tu frontend:
+    • src/config/api.ts
+    • src/services/auth.service.ts
+    • src/services/api.client.ts
+    • src/services/leads.service.ts
+    • src/services/projects.service.ts
+    • src/hooks/useAuth.ts
+    • src/hooks/useApi.ts
+    • src/components/ProtectedRoute.tsx
+    • src/stores/authStore.ts
+    • src/stores/leadsStore.ts
+    • src/utils/transformers.ts
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  🏗️ CÓMO MEJORAR EL INVENTARIO                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    OPCIÓN 1: Implementación Completa (14 horas)
+    
+    Paso 1: Extender modelos (3h)
+            • Copiar campos de models_enhanced.py a models.py
+            • Crear migración
+            • Aplicar migración
+    
+    Paso 2: Actualizar serializers (2h)
+            • Agregar nuevos campos
+            • Validaciones
+    
+    Paso 3: Crear nuevos endpoints (4h)
+            • Implementar 30+ endpoints propuestos
+            • Views y actions
+    
+    Paso 4: Testing (3h)
+            • Tests para nuevos endpoints
+            • Tests de workflows
+    
+    Paso 5: Admin mejorado (2h)
+            • Campos nuevos en admin
+            • Bulk actions
+
+    OPCIÓN 2: Implementación por Fases
+    
+    Fase 1 (4h): Estados mejorados + Workflow básico
+    Fase 2 (4h): Tracking de pagos
+    Fase 3 (3h): Personalizaciones
+    Fase 4 (3h): Reportes y analytics
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  📊 COMPARACIÓN: ACTUAL VS PROPUESTO                                         │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    PROJECTS:
+    
+    ACTUAL:
+    • ~40 campos
+    • Estados básicos de proyecto
+    • Inventario simple (total, disponible, vendido)
+    • Información básica de ubicación y precios
+    
+    PROPUESTO:
+    • ~90 campos
+    • Tracking financiero completo
+    • Fases de construcción detalladas
+    • Documentación legal
+    • Marketing campaigns tracking
+    • Inventory breakdown detallado
+    • Garantías y post-venta
+
+    UNITS:
+    
+    ACTUAL:
+    • ~30 campos
+    • 4 estados (available, reserved, sold, blocked)
+    • Info básica de cliente
+    • Precio simple
+    
+    PROPUESTO:
+    • ~100 campos
+    • 13 estados con workflow completo
+    • Sistema de opciones (24-48h)
+    • Sistema de apartado (señas)
+    • Tracking de pagos completo
+    • Historial de precios
+    • Personalizaciones del cliente
+    • Construcción y entrega detallada
+    • Parking y storage
+    • HOA y gastos mensuales
+    • Garantías
+    • Audit trail completo
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  🎯 BENEFICIOS DE LAS MEJORAS                                                │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    PARA VENTAS:
+    ✅ Workflow claro de cada unidad
+    ✅ No perder track de opciones
+    ✅ Saber exactamente en qué estado está cada cliente
+    ✅ Historial completo de operaciones
+
+    PARA FINANZAS:
+    ✅ Tracking de todos los pagos
+    ✅ Identificar pagos vencidos automáticamente
+    ✅ Proyecciones de cash flow
+    ✅ ROI por proyecto calculado
+
+    PARA CONSTRUCCIÓN:
+    ✅ Track de progreso por unidad
+    ✅ Cronograma detallado
+    ✅ Inspecciones registradas
+    ✅ Programación de entregas
+
+    PARA MANAGEMENT:
+    ✅ Reportes completos financieros
+    ✅ Velocity de ventas
+    ✅ Health del inventario
+    ✅ Customer insights
+
+    PARA CLIENTES:
+    ✅ Personalización de acabados
+    ✅ Tracking de construcción de SU unidad
+    ✅ Calendario de pagos claro
+    ✅ Proceso de entrega transparente
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  🚀 PRÓXIMOS PASOS RECOMENDADOS                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    INMEDIATO (Esta semana):
+    
+    1. Lee FRONTEND_INTEGRATION_GUIDE.md completo
+    2. Decide qué opción de integración usar
+    3. Crea los archivos de servicios en tu frontend
+    4. Implementa login y autenticación primero
+
+    CORTO PLAZO (Este mes):
+    
+    1. Revisa INVENTORY_MODELS_ENHANCED.md
+    2. Decide qué campos necesitas realmente
+    3. Implementa Fase 1 de mejoras (estados + workflow)
+    4. Crea migraciones y actualiza
+
+    MEDIANO PLAZO (Próximo trimestre):
+    
+    1. Implementa tracking de pagos completo
+    2. Agrega sistema de personalizaciones
+    3. Implementa reportes financieros
+    4. Testing completo de nuevas features
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  📚 ESTRUCTURA DE LA DOCUMENTACIÓN AHORA                                     │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    owly-api-django/
+    ├── 🚀 Inicio
+    │   ├── 🚀-LEEME-PRIMERO.txt
+    │   ├── START_HERE.md
+    │   ├── QUICKSTART.md
+    │   └── INDEX.md
+    │
+    ├── 📖 Documentación Core
+    │   ├── MODELS_DOCUMENTATION.md
+    │   ├── ENDPOINTS_GUIDE.md
+    │   ├── ARCHITECTURE_GUIDE.md
+    │   └── DOCUMENTATION_INDEX.md
+    │
+    ├── 🔌 Integración (NUEVO)
+    │   ├── FRONTEND_INTEGRATION_GUIDE.md  ⭐
+    │   ├── INVENTORY_MODELS_ENHANCED.md   ⭐
+    │   ├── INVENTORY_ENDPOINTS.md         ⭐
+    │   └── apps/projects/models_enhanced.py
+    │
+    ├── ⚡ Mejoras
+    │   ├── API_ENHANCEMENTS.md
+    │   └── ENHANCEMENTS_SUMMARY.md
+    │
+    ├── 🧪 Testing
+    │   ├── TESTING_GUIDE.md
+    │   └── 🧪-TESTS-SUMMARY.txt
+    │
+    ├── 🔧 Configuración
+    │   ├── ENV_SETUP.md
+    │   ├── DEPLOYMENT.md
+    │   └── COPY_AND_USE.md
+    │
+    └── 📊 Resúmenes
+        ├── PROJECT_SUMMARY.md
+        ├── RESUMEN_FINAL.md
+        ├── FINAL_SUMMARY.md
+        └── 📘-GUIAS-NUEVAS-CREADAS.txt (este)
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  ✅ RESPUESTA A TUS PREGUNTAS                                                │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+    ❓ "¿Cómo conecto el frontend a la API?"
+    ✅ FRONTEND_INTEGRATION_GUIDE.md
+       • 12 pasos detallados
+       • Código completo TypeScript
+       • Servicios, hooks, componentes
+       • No hace integración, te da todo el código
+
+    ❓ "Projects y Units están muy básicos"
+    ✅ INVENTORY_MODELS_ENHANCED.md
+       • 50+ campos nuevos para Projects
+       • 70+ campos nuevos para Units
+       • Workflow de 13 estados
+       • Sistema profesional de inventario
+
+    ❓ "¿La API soporta múltiples compañías?"
+    ✅ SÍ - Es completamente multi-tenant
+       • Cada empresa con sus propios datos
+       • JWT tokens independientes
+       • Aislamiento automático
+       • Testeado y verificado
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║                    📘 DOCUMENTACIÓN COMPLETA CREADA                         ║
+║                                                                              ║
+║      Frontend Integration:  FRONTEND_INTEGRATION_GUIDE.md                  ║
+║      Inventory Enhanced:    INVENTORY_MODELS_ENHANCED.md                   ║
+║      New Endpoints:         INVENTORY_ENDPOINTS.md                         ║
+║                                                                              ║
+║                  ¡Todo Documentado, Listo para Implementar!                 ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
