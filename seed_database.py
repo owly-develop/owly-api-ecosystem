@@ -155,6 +155,7 @@ def create_projects(companies):
     all_projects = []
     project_types = ['residential', 'commercial', 'mixed_use']
     statuses = ['active', 'active', 'active', 'pre_launch']
+    project_counter = 0  # Contador global para nombres únicos
     
     for company in companies:
         print(f"\n  Empresa: {company.name}")
@@ -164,6 +165,7 @@ def create_projects(companies):
             city, state = random.choice(CITIES)
             project_type = random.choice(project_types)
             status = statuses[i]
+            project_counter += 1
             
             total_units = random.randint(30, 120)
             sold = random.randint(0, int(total_units * 0.6))
@@ -173,9 +175,19 @@ def create_projects(companies):
             price_from = random.randint(200000, 400000)
             price_to = price_from + random.randint(200000, 600000)
             
+            # Preparar media items
+            media_items = [
+                {
+                    'type': 'image',
+                    'reference': f'gallery_{j}',
+                    'url': f"https://picsum.photos/seed/{fake.uuid4()}/800/600"
+                }
+                for j in range(5)
+            ]
+            
             project = Project.objects.create(
                 company=company,
-                name=f"{random.choice(PROJECT_NAMES)} {city}",
+                name=f"{random.choice(PROJECT_NAMES)} {city} #{project_counter}",
                 code=f"{city[:3].upper()}-{fake.bothify(text='##??').upper()}",
                 developer=company.legal_name,
                 type=project_type,
@@ -203,7 +215,7 @@ def create_projects(companies):
                 delivery_date=fake.date_between(start_date='today', end_date='+2y'),
                 construction_progress=random.randint(40, 95) if status == 'active' else random.randint(0, 30),
                 main_image=f"https://picsum.photos/seed/{fake.uuid4()}/800/600",
-                images=[f"https://picsum.photos/seed/{fake.uuid4()}/800/600" for _ in range(5)],
+                media_items=media_items,
                 featured=i == 0,  # Primer proyecto es featured
                 tags=['nuevo', 'destacado'] if i == 0 else ['disponible'],
                 project_manager=random.choice(company_users),

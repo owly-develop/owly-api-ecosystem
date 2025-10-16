@@ -99,7 +99,7 @@ class Project(TenantAwareModel, SoftDeleteModel):
     interactive_units = models.JSONField(default=list, blank=True)
     orbit_view_project = models.CharField(max_length=255, blank=True)
     orbit_view_amenities = models.CharField(max_length=255, blank=True)
-    orbit_views = models.CharField(max_length=255, blank=True)
+    orbit_views_string = models.CharField(max_length=255, blank=True, help_text="Legacy orbit views reference")
     
     # Design/Branding
     background_color = models.CharField(max_length=7, blank=True, help_text="Hex color code")
@@ -210,7 +210,7 @@ class Unit(TenantAwareModel, SoftDeleteModel):
     
     # Basic Information
     name = models.CharField(max_length=100, blank=True)
-    code = models.CharField(max_length=50)
+    code = models.CharField(max_length=50, default='')
     unit_number = models.CharField(max_length=50)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
     glb_code = models.CharField(max_length=255, blank=True)

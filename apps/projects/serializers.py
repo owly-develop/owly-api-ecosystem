@@ -122,7 +122,7 @@ class OrbitViewSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     """Serializer for Project model"""
     stages = StageListSerializer(many=True, read_only=True)
-    orbit_views_list = OrbitViewSerializer(source='orbit_views', many=True, read_only=True)
+    orbit_views_data = OrbitViewSerializer(source='orbit_views', many=True, read_only=True)
     occupancy_rate = serializers.FloatField(read_only=True)
     project_manager_name = serializers.CharField(source='project_manager.full_name', read_only=True, allow_null=True)
     

@@ -21,7 +21,7 @@ class UnitInline(admin.TabularInline):
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     list_display = [
-        'code_link', 'name', 'type_badge', 'status_badge',
+        'code_link', 'name', 'copy_id_button', 'type_badge', 'status_badge',
         'city', 'units_display', 'occupancy_display',
         'price_range_display', 'featured', 'created_at'
     ]
@@ -48,6 +48,7 @@ class ProjectAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Basic Information', {
             'fields': (
+                'id',
                 ('name', 'code'),
                 ('company', 'developer'),
                 ('type', 'status'),
@@ -89,7 +90,7 @@ class ProjectAdmin(admin.ModelAdmin):
         ('Media', {
             'fields': (
                 'main_image',
-                'images',
+                'media_items',
                 'brochure_url',
                 'video_url'
             ),
@@ -126,6 +127,17 @@ class ProjectAdmin(admin.ModelAdmin):
         return format_html('<a href="{}">{}</a>', url, obj.code)
     code_link.short_description = 'Code'
     code_link.admin_order_field = 'code'
+    
+    def copy_id_button(self, obj):
+        return format_html(
+            '<div style="font-family: monospace; font-size: 11px;">'
+            '<span title="{}" style="cursor: pointer;" onclick="navigator.clipboard.writeText(\'{}\'); alert(\'ID copiado!\')">📋 {}</span>'
+            '</div>',
+            obj.id,
+            obj.id,
+            str(obj.id)[:8] + '...'
+        )
+    copy_id_button.short_description = 'ID (click to copy)'
     
     def type_badge(self, obj):
         colors = {
